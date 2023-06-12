@@ -6,7 +6,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Initialize stripe
 import Stripe from 'stripe';
-const stripe = new Stripe(process.env.STRIPE_SECRET, {
+export const stripe = new Stripe(process.env.STRIPE_SECRET, {
     apiVersion: '2022-11-15',
 });
 

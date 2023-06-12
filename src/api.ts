@@ -1,4 +1,4 @@
-import express, {Request, Response} from 'express';
+import express, {NextFunction, Request, Response} from 'express';
 export const app = express();
 
 // all input will be string converts to javascript object
@@ -15,3 +15,23 @@ app.post('/test', (req: Request, res: Response) => {
     res.status(200).send({ with_tax: amount * 7 });
 
 });
+
+import { createStripeCheckoutSession } from './checkout';
+
+// Catch async errors when awaiting promises
+function runAsync(callback: Function) {
+    return (req: Request, res: Response, next: NextFunction) => {
+        callback(req, res, next).catch(next);
+    };
+}
+
+// Checkouts
+app.post(
+    '/checkouts/', 
+    runAsync( async ({ body }: Request, res: Response) => {
+        res.send(
+            await createStripeCheckoutSession(body.line_items)
+        );
+    })
+);
+
