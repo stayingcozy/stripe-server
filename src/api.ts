@@ -173,10 +173,6 @@ app.patch(
     '/subscriptions/:id',
     runAsync(async (req: Request, res: Response) => {
       const user = validateUser(req);
-      console.log("url stripe id and user")
-      console.log(req.params.id)
-      console.log(user.uid)
-      console.log("id done")
       res.send(await cancelSubscription(user.uid, req.params.id));
     })
   );
