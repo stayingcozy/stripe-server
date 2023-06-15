@@ -49,6 +49,7 @@ import { createStripeCheckoutSession } from './checkout';
 import { createPaymentIntent } from './payments';
 import { handleStripeWebhook } from './webhooks';
 import { createSetupIntent, listPaymentMethods } from './customers';
+import { cancelSubscription, createSubscription, listSubscriptions } from './billing';
 
 
 // Catch async errors when awaiting promises
@@ -138,3 +139,44 @@ app.get(
         res.send(wallet.data);
     })
 );
+
+
+/** 
+ * Billing and Recurring Subscriptions
+ */
+
+// Create and charge new Subscription
+app.post(
+    '/subscriptions/',
+    runAsync(async (req: Request, res: Response) => {
+        const user = validateUser(req);
+        const { plan, payment_method } = req.body;
+        const subscription = await createSubscription(user.uid, plan, payment_method);
+        res.send(subscription); // result send back down to the client
+    })
+)
+
+// Get all subscriptions for a customer
+app.get(
+    '/subscriptions/',
+    runAsync(async (req: Request, res: Response) => {
+        const user = validateUser(req);
+
+        const subscriptions = await listSubscriptions(user.uid);
+
+        res.send(subscriptions.data);
+    })
+);
+
+// Unsubscribe or cancel a subscription
+app.patch(
+    '/subscriptions/:id',
+    runAsync(async (req: Request, res: Response) => {
+      const user = validateUser(req);
+      console.log("url stripe id and user")
+      console.log(req.params.id)
+      console.log(user.uid)
+      console.log("id done")
+      res.send(await cancelSubscription(user.uid, req.params.id));
+    })
+  );

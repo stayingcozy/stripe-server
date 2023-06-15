@@ -1,6 +1,8 @@
 import { stripe } from './';
 import Stripe from 'stripe';
 import { Request, Response } from 'express';
+import { db } from './firebase';
+import { firestore } from 'firebase-admin';
 
 /**
  * Business logic for specific webhook event types
@@ -16,7 +18,33 @@ const webhookHandlers = {
     'payment_intent.created': async (data: Stripe.PaymentIntent) => {
         // more logic
     },
+    'checkout.session.completed': async (data: Stripe.Event.Data) => {
+        // more logic
+    },
+    'customer.subscription.deleted': async (data: Stripe.Subscription) => {
+        // more logic
+    },
+    'customer.subscription.created': async (data: Stripe.Subscription) => {
+      // once become customer update Stripe account and Firebase membership status
+      const customer = await stripe.customers.retrieve( data.customer as string ) as Stripe.Customer;
+      const userId = customer.metadata.firebaseUID;
+      const userRef = db.collection('users').doc(userId);
 
+        await userRef
+            .update({
+              activePlans: firestore.FieldValue.arrayUnion(data.id),
+            })
+    },
+    'invoice.payment_succeeded': async (data: Stripe.Invoice) => {
+      // more logic
+    },
+    'invoice.payment_failed': async (data: Stripe.Invoice) => {
+      // if subscription payment failed need to notify user they need to update payment info
+      const customer = await stripe.customers.retrieve( data.customer as string ) as Stripe.Customer;
+      const userSnapshot = await db.collection('users').doc(customer.metadata.firebaseUID).get();
+      await userSnapshot.ref.update({ status: 'PAST_DUE' });
+      // front end to notify user that they need to update payment info otherwise their membership will be canceled
+    },
 };
 
 /**
