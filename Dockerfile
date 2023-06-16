@@ -1,10 +1,10 @@
 FROM node:18.14.2
 
-WORKDIR usr/src/app
+WORKDIR /app
 
 # Install Packages
 COPY package*.json ./
-RUN npm Install
+RUN npm install
 
 # Specify production environment
 ENV NODE_ENV=production
@@ -13,7 +13,7 @@ ENV NODE_ENV=production
 COPY . .
 
 # Build it
-RUN npm run Build
+RUN npm run build
 
 # Serve it
 CMD ["npm", "start"]
