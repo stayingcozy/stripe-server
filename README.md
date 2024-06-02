@@ -9,11 +9,21 @@ Rest API for your app to utilize Stripe for processing payments. This is a the t
 
 
 ## Tech Stack
-<p align="center">
-    <img src="assets/640px-Stripe_Logo,_revised_2016.svg.png">
-    <img src="assets/640px-Node.js_logo.svg.png" >
-    <img src="assets/640px-Docker_(container_engine)_logo.svg.png">
-</p>
+
+<img src="assets/640px-Stripe_Logo,_revised_2016.svg.png">
+<img src="assets/640px-Node.js_logo.svg.png" >
+<img src="assets/640px-Docker_(container_engine)_logo.svg.png">
+
+
+<style>
+  .img {
+    display: inline-block;
+  }
+  img.mobile-image {
+	width: 49%;
+    display: inline-block;
+  }
+</style>
 
 ## Usage
 Run it with
