@@ -1,5 +1,5 @@
 # Stripe Server
-Rest API for your app to utilize Stripe for processing payments. This is a the tool helps monetize your app.  Does not include front end code.
+Rest API for your app to utilize Stripe for processing payments. This tool helps monetize your app.  Does not include front end code.
 
 *Includes* 
 
